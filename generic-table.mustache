@@ -1,0 +1,33 @@
+<table class="table {{tableClass}}">
+  <colgroup>
+    {{#col}}
+      <col {{#className}}class="{{className}}"{{/className}}/>
+    {{/col}}
+  </colgroup>
+  <thead>
+    <tr>
+      {{#col}}
+        <th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">
+          {{name}}
+          {{#sortasc}}<i class="icon-chevron-up"></i>{{/sortasc}}
+          {{#sortdesc}}<i class="icon-chevron-down"></i>{{/sortdesc}}
+        </th>
+      {{/col}}
+    </tr>
+  </thead>
+  <tbody>
+    {{#data}}
+      <tr data-cid="{{cid}}" class="{{rowClass}}">
+        {{#row}}
+          <td {{#className}}class="{{className}}"{{/className}}>
+            {{text}}
+            {{{html}}}
+          </td>
+        {{/row}}
+      </tr>
+    {{/data}}
+    {{^data}}
+      <tr><td colspan={{col.length}} style="text-align:center;">{{emptyMessage}}</td></tr>
+    {{/data}}
+  </tbody>
+</table>

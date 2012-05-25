@@ -1,0 +1,9 @@
+This is a very functional Backbone.js table sorter plugin that respects your views().
+
+I the backbone-tablesorter promise to:
+  - Not destroy your views unless you destory my models
+  - Keep all your bindings
+  - Do the annoying sutff for you
+  - Love twitter bootstrap but not make you marry it too
+  - Love mustache.js but not make you marry it either
+  - Require backone.js underscore.js and jquery (I don't know about this zepto fellow but I'll gladly support it if it does the right stuff.)
