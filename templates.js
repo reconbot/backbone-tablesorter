@@ -2,9 +2,9 @@
 
   var BTS;
   if(typeof this.BTS === 'undefined'){
-    BTS = this.BTS;
-  }else{
     BTS = this.BTS = {};
+  }else{
+    BTS = this.BTS;
   }
 
   BTS.templates = {
@@ -25,7 +25,7 @@
     //   </tr>
     // </thead>
     // <tbody></tbody>
-    
+
     'sortable-table-row':'{{#col}}<td {{#className}}class="{{className}}"{{/className}}>{{text}}{{{html}}}</td>{{/col}}'
     // {{#col}}
     //   <td {{#className}}class="{{className}}"{{/className}}>

@@ -2,15 +2,15 @@
 
   var BTS;
   if(typeof this.BTS === 'undefined'){
-    BTS = this.BTS;
-  }else{
     BTS = this.BTS = {};
+  }else{
+    BTS = this.BTS;
   }
 
   // This is abstracted out becuase.. well you might not want to do it this way
   BTS.renderTemplate = function(template, data){
-    var tmpl = BTS.templates[template] || template;
-    if(!template){throw new Error("Can't find the template: " + template);}
+    var tmpl = BTS.templates[template];
+    if(!tmpl){throw new Error("Can't find the template: " + template);}
     return Mustache.render(tmpl, data);
   };
 
@@ -23,12 +23,16 @@
 
     sort: function(opt){
       opt = opt || {};
+      var reallySilent = opt.silent;
       opt.silent = true;
       Backbone.Collection.prototype.sort.call(this, opt);
-      this.trigger('sort', this, opt);
+      if(!reallySilent){
+        this.trigger('sort', this, opt);
+      }
     },
 
     sortByField: function(field, asc){
+      console.log('sortByField', field, asc);
       if(!this.checkField(field)){
         return false;
       }
@@ -105,7 +109,7 @@
     initialize: function(opt){
       opt = opt || {};
       this.opt = _.defaults(opt,{
-        template: 'expandable-table',
+        template: 'sortable-table',
         tableClass: false,
         sortable: true,
         view: BTS.GenericTableRow,
@@ -117,13 +121,15 @@
         this.$el.addClass(this.opt.tableClass);
       }
 
-      this.collection = this.collection || new WC.SortableList();
+      this.collection = this.collection || new BTS.SortableList();
 
       // if anything changes...
       this.collection.on('reset', this.reset, this);
       this.collection.on('add', this.add, this);
       this.collection.on('remove', this.remove, this);
       this.collection.on('sort', this.sort, this);
+
+      this.render();
     },
 
     render: function(){
@@ -131,10 +137,12 @@
         col: this.col()
       }));
       this.tbody = this.$('tbody');
+      if(!this.tbody.length){ throw new Error('No table body found');}
       this.reset();
     },
 
     update: function(){
+      console.log('update');
       this.detatchAll();
       this.render();
       this.attachAll();
@@ -157,6 +165,7 @@
     },
 
     triggerSort: function(e){
+      console.log('triggerSort');
       if(!this.opt.sortable){return;}
 
       var list = this.collection;
@@ -167,6 +176,7 @@
     },
 
     sort: function(){
+      console.log('sort');
       this.detatchAll();
       this.updateHeaders();
       this.attachAll();
@@ -202,15 +212,11 @@
     },
 
     attachAll: function(){
+      console.log('attachAll');
       this.collection.forEach(function(model){
         var cid = model.cid;
-        var dis = this.displayedRows[cid];
-        var exp = this.expandedRows[cid];
         var row = this.rows[cid];
-        if(this.opt.keepRow && dis === exp){
-          this.tbody.append(row.el);
-        }
-        this.tbody.append(dis.el);
+        this.tbody.append(row.el);
       }, this);
     },
 
@@ -220,30 +226,18 @@
 
     removeAll: function(){
       this.rows = {};
-      this.expandedRows = {};
-      this.displayedRows = {};
       this.tbody.empty();
     },
 
     add: function(model){
+      console.log('add');
       var cid = model.cid;
       var data = {
         model: model,
         col: this.col()
       };
       var row = this.rows[cid] = new this.opt.view(data);
-      var exp = this.expandedRows[cid] = new this.opt.expandedView(data);
-
-      row.on('toggle', this.toggle, this);
-      row.on('expand', this.expand, this);
-      row.on('contract', this.contract, this);
-      
-      exp.on('toggle', this.toggle, this);
-      exp.on('expand', this.expand, this);
-      exp.on('contract', this.contract, this);
-
-      this.displayedRows[cid] = this.rows[cid];
-      this.tbody.append(this.rows[cid].el);
+      this.tbody.append(row.el);
 
       if(this.collection.length === 1){
         this.removeEmpty();
@@ -256,12 +250,7 @@
       this.rows[cid].remove();
       this.rows[cid].off();
 
-      this.expandedRows[cid].remove();
-      this.expandedRows[cid].off();
-
       delete this.rows[cid];
-      delete this.expandedRows[cid];
-      delete this.displayedRows[cid];
       this.addEmpty();
     },
 
@@ -279,7 +268,7 @@ BTS.GenericTableRow = Backbone.View.extend({
 
     tagName: 'tr',
 
-    template: 'expandable-table-row',
+    template: 'sortable-table-row',
 
     context: {},
 
