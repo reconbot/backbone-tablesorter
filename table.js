@@ -32,7 +32,7 @@
     },
 
     sortByField: function(field, asc){
-      console.log('sortByField', field, asc);
+      //console.log('sortByField', field, asc);
       if(!this.checkField(field)){
         return false;
       }
@@ -142,7 +142,7 @@
     },
 
     update: function(){
-      console.log('update');
+      //console.log('update');
       this.detatchAll();
       this.render();
       this.attachAll();
@@ -165,7 +165,7 @@
     },
 
     triggerSort: function(e){
-      console.log('triggerSort');
+     //console.log('triggerSort');
       if(!this.opt.sortable){return;}
 
       var list = this.collection;
@@ -176,7 +176,7 @@
     },
 
     sort: function(){
-      console.log('sort');
+      //console.log('sort');
       this.detatchAll();
       this.updateHeaders();
       this.attachAll();
@@ -212,7 +212,7 @@
     },
 
     attachAll: function(){
-      console.log('attachAll');
+      //console.log('attachAll');
       this.collection.forEach(function(model){
         var cid = model.cid;
         var row = this.rows[cid];
@@ -230,7 +230,7 @@
     },
 
     add: function(model){
-      console.log('add');
+      //console.log('add');
       var cid = model.cid;
       var data = {
         model: model,

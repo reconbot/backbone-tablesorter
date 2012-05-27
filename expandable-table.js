@@ -45,6 +45,36 @@
       }else{
         this.contract(cid);
       }
+    },
+
+    //todo make this work
+    add: function(model){
+      var exp = this.expandedRows[cid] = new this.opt.expandedView(data);
+
+      row.on('toggle', this.toggle, this);
+      row.on('expand', this.expand, this);
+      row.on('contract', this.contract, this);
+      
+      exp.on('toggle', this.toggle, this);
+      exp.on('expand', this.expand, this);
+      exp.on('contract', this.contract, this);
+
+      this.displayedRows[cid] = this.rows[cid];
+    },
+
+    remove: function(model){
+      this.expandedRows[cid].remove();
+      this.expandedRows[cid].off();
+      delete this.expandedRows[cid];
+      delete this.displayedRows[cid];
+    },
+
+    attachAll: function(){
+      var dis = this.displayedRows[cid];
+      var exp = this.expandedRows[cid];
+      if(this.opt.keepRow && dis === exp){
+        this.tbody.append(row.el);
+      }
     }
 
   });

@@ -1,6 +1,7 @@
 <html>
 <head>
   <title>Example Page for Backbone Tablesorter</title>
+  <link rel="stylesheet" type="text/css" href="lib/bootstrap.css">
 </head>
 <body>
   <h1>Example Page for Backbone Tablesorter</h1>
@@ -14,6 +15,19 @@
 
   <script type="text/javascript" src="table.js"></script>
   <script type="text/javascript" src="templates.js"></script>
+  <script type="text/javascript">
+    var myCoolTable;
+    $(function(){
+      myCoolTable = new BTS.SortableTable({
+        el: $('#example'),
+        collection: new BTS.SortableList([
+          {'name':'John Smith', 'age':42},
+          {'name':'Alex Ham', 'age':25}
+        ]),
+        tableClass:'table table-bordered table-striped'
+      });
+    });
+  </script>
 
 </body>
 </html>

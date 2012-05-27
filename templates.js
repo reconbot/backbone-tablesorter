@@ -8,7 +8,7 @@
   }
 
   BTS.templates = {
-    'sortable-table': '<colgroup>{{#col}}<col {{#className}}class="{{className}}"{{/className}}/>{{/col}}</colgroup><thead><tr>{{#col}}<th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">{{name}}<i class="js-sort-sprite"></i></th>{{/col}}</tr></thead><tbody></tbody>',
+    'sortable-table': '<colgroup>{{#col}}<col {{#className}}class="{{className}}"{{/className}}/>{{/col}}</colgroup><thead><tr>{{#col}}<th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">{{name}} <i class="js-sort-sprite"></i></th>{{/col}}</tr></thead><tbody></tbody>',
     // <colgroup>
     //   {{#col}}
     //     <col {{#className}}class="{{className}}"{{/className}}/>
@@ -18,8 +18,7 @@
     //   <tr>
     //     {{#col}}
     //       <th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">
-    //         {{name}}
-    //         <i class="js-sort-sprite"></i>
+    //         {{name}} <i class="js-sort-sprite"></i>
     //       </th>
     //     {{/col}}
     //   </tr>
