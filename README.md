@@ -19,3 +19,4 @@ I only ask that you the model:
   - Keep yourself a tr, I don't care about anything else
   - Emit events when you'd like me to swap you out
   - Only join a collection who's either a SortableList or knows one personally. (If you do a good impression that will fly too.)
+
