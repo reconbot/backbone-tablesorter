@@ -1,12 +1,71 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>Example Page for Backbone Tablesorter</title>
   <link rel="stylesheet" type="text/css" href="lib/bootstrap.css">
 </head>
 <body>
-  <h1>Example Page for Backbone Tablesorter</h1>
-  <div id="example"></div>
+  <div class="container">
 
+    <div class="row">
+      <div class="span12">
+        <h1>Example Page for Backbone Tablesorter</h1>
+        <p>
+          This is a lot of fun. See the <a href="https://github.com/reconbot/backbone-tablesorter">readme</a> for explanations. 
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span12">
+        Lets make a quick and easy example table. I don't even want to think about making columns, or figuring out datatypes.
+        Also age before alphabet.
+    </div>
+    <div class="row">
+      <div class="span8">
+        <pre>
+          var nameTable, names = [
+            {name:'Bill',age:42},
+            {name:'Jeff',age:19},
+            {name:'Maggie',age:28}
+          ];
+          $(function(){
+            nameTable = new BTS.SortableTable({
+              el: $('#ageTable'),
+              tableClass:'table table-bordered table-striped',
+              collection: new BTS.SortableList(names)
+            });
+            nameTable.collection.sortByField('age');
+          });
+        </pre>
+      </div>
+      <div class="span4">
+        <table id="ageTable"></table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="span12">
+        Now for something completely different. Ahead we'll make a live updating twitter search by extending the SortableList class.
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="span12">
+        <h2>Twitter search for:</h2>
+        <form id="search" class="form-inline">
+          <fieldset>
+            <div class="control-group">
+              <div class="controls">
+                <div class="input-append">
+                  <input class="span2" id="twitterSearch" type="text" value="backbonejs"/><input type="submit" class="btn btn-primary" value="Search"/>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+        <table id="twitterTable"></table>
+      </div>
+    </div>
+  </div>
   <!-- Soooo many deps -->
   <script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
   <script type="text/javascript" src="lib/underscore-min.js"></script>
@@ -17,25 +76,40 @@
   <script type="text/javascript" src="twitter.js"></script>
   <script type="text/javascript" src="templates.js"></script>
   <script type="text/javascript">
-    var myCoolTable;
-    var tweets = new TweetSearch(null,{search:'backbonejs'});
+    var nameTable, names = [{name:'Bill',age:42},{name:'Jeff',age:19},{name:'Maggie',age:28}];
+    
+    var tweets = new TweetSearch(null,{search:$('#twitterSearch').val()});
     tweets.fetch();
+    var twitterTable;
 
     $(function(){
-      myCoolTable = new BTS.SortableTable({
-        el: $('#example'),
+      nameTable = new BTS.SortableTable({
+        el: $('#ageTable'),
+        tableClass:'table table-bordered table-striped',
+        collection: new BTS.SortableList(names)
+      });
+      nameTable.collection.sortByField('age');
+
+      twitterTable = new BTS.SortableTable({
+        el: $('#twitterTable'),
         collection: tweets,
         tableClass:'table table-bordered table-striped',
         col:[
           {name:'User', field:'from_user', render:function(user, model){
-            return '<img src="'+ model.get('profile_image_url') + '" /> <br>' + user;
+            var url = "https://twitter.com/" + user + "/status/" + model.get('id_str');
+            return '<a target="_blank" href="' + url + '"><img src="'+ model.get('profile_image_url') + '" /> <br>' + user + "</a>";
           }},
           {name:'Tweet', field:'text'},
           {name:'Created', field: 'created_at'}
         ]
       });
-    
-});
+
+      $('#search').submit(function(e){
+        e.preventDefault();
+        tweets.search = $('#twitterSearch').val();
+        tweets.fetch();
+      })
+    });
   </script>
 
 </body>

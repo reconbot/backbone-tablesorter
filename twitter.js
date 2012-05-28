@@ -2,7 +2,7 @@ var TweetSearch = BTS.SortableList.extend({
 	
 	url: function(){
 		if(!this.search){throw new Error('No search defined');}
-		return 'http://search.twitter.com/search.json?q=' + this.search;
+		return 'http://search.twitter.com/search.json?rpp=25&q=' + this.search;
 	},
 
 	initialize: function(models, opt){
