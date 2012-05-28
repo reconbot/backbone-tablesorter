@@ -1,5 +1,7 @@
 This is a very functional Backbone.js table sorter plugin that respects your views(). Its primary usecase (to be abstracted away into a subclass) is currently to show you some rows and let you swap out or add another row that has more details. I imagine you'll want to do something else with it. I made this because I wanted people to be able to sort things while not destroying all their work.
 
+[http://reconbot.github.com/backbone-tablesorter/demo.html](Lets play with the demo!)
+
 I the backbone-tablesorter promise to:
   - Not destroy your views unless you destory my models
   - Not care about your rendering or updating, that's between you and your model.
