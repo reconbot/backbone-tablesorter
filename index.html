@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Backbone-tablesorter by reconbot</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/reconbot/backbone-tablesorter">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Backbone-tablesorter</h1>
+            <h2>A backbone.JS powered table generation and sorter library that respects your Views();</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/reconbot/backbone-tablesorter/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/reconbot/backbone-tablesorter/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <p>This is a very functional Backbone.js table sorter plugin that respects your views(). Its primary use case is to render complex views as table rows for models in a collection and to preserve them when sorting, adding or removing models. I imagine you'll want to do something more with it, so it's easily extendable. I made this because I wanted people to be able to sort things while not destroying their work in complex sub views.</p>
+
+<p>I the backbone-tablesorter promise to:</p>
+
+<ul>
+<li>Not destroy your views unless you destory my models</li>
+<li>Not care about your rendering or updating, that's between you and your model.</li>
+<li>Keep all your bindings</li>
+<li>Do the annoying sutff for you</li>
+<li>Love twitter bootstrap but not make you marry it</li>
+<li>Love mustache.js but not make you marry it either</li>
+<li>Require backone.js underscore.js and jquery </li>
+<li>(I don't know about this zepto fellow but I'll gladly support him if it does the right stuff.)</li>
+</ul><p>I will never do:</p>
+
+<ul>
+<li>Re-render your models to sort</li>
+<li>Drink too much coffeescript</li>
+<li>Care what you do in the sanctity of your own tr</li>
+</ul><p>I only ask that you the model:</p>
+
+<ul>
+<li>Keep yourself a tr, I don't care about anything else</li>
+<li>Emit events when you'd like me to swap you out</li>
+<li>Only join a collection who's either a SortableList or knows one personally. (If you do a good impression that will fly too.)</li>
+</ul>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/reconbot">reconbot</a> can be found on <a href="https://github.com/reconbot/backbone-tablesorter">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-8517491-8");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
