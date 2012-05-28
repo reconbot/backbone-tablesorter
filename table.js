@@ -94,6 +94,7 @@
         return b < a ? -1 : b > a ? 1 : 0;
       }
     }
+  
   });
 
   BTS.SortableTable = Backbone.View.extend({
@@ -130,6 +131,7 @@
       this.collection.on('sort', this.sort, this);
 
       this.render();
+      this.reset();
     },
 
     render: function(){
@@ -138,7 +140,6 @@
       }));
       this.tbody = this.$('tbody');
       if(!this.tbody.length){ throw new Error('No table body found');}
-      this.reset();
     },
 
     update: function(){
@@ -195,8 +196,9 @@
     
     reset: function(){
       this.removeAll();
-      this.addEmpty();
+      this.render(); //needed to redraw the headers
       this.updateHeaders(); // the sort is already done during the reset so...
+      this.addEmpty();
       this.collection.forEach(this.add, this);
     },
 
