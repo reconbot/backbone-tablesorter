@@ -14,19 +14,28 @@
   <script type="text/javascript" src="lib/backbone-min.js"></script>
 
   <script type="text/javascript" src="table.js"></script>
+  <script type="text/javascript" src="twitter.js"></script>
   <script type="text/javascript" src="templates.js"></script>
   <script type="text/javascript">
     var myCoolTable;
+    var tweets = new TweetSearch(null,{search:'backbonejs'});
+    tweets.fetch();
+
     $(function(){
       myCoolTable = new BTS.SortableTable({
         el: $('#example'),
-        collection: new BTS.SortableList([
-          {'name':'John Smith', 'age':42},
-          {'name':'Alex Ham', 'age':25}
-        ]),
-        tableClass:'table table-bordered table-striped'
+        collection: tweets,
+        tableClass:'table table-bordered table-striped',
+        col:[
+          {name:'User', field:'from_user', render:function(user, model){
+            return '<img src="'+ model.get('profile_image_url') + '" /> <br>' + user;
+          }},
+          {name:'Tweet', field:'text'},
+          {name:'Created', field: 'created_at'}
+        ]
       });
-    });
+    
+});
   </script>
 
 </body>
