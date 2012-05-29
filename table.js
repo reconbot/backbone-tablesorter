@@ -1,4 +1,4 @@
-/*global _:true, Backbone:false, $: true, Mustache: true */
+/*global _:true, Backbone:true, $: true, Mustache: true */
 
 (function(){
 
@@ -122,6 +122,7 @@
       }
 
       this.collection = this.collection || new BTS.SortableList();
+      this.rows = {};
 
       // if anything changes...
       this.collection.on('reset', this.reset, this);
@@ -139,6 +140,14 @@
       }));
       this.tbody = this.$('tbody');
       if(!this.tbody.length){ throw new Error('No table body found');}
+    },
+
+    reset: function(){
+      this.removeAll();
+      this.render(); //needed to redraw the headers
+      this.updateHeaders(); // the sort is already done during the reset so...
+      this.addEmpty();
+      this.collection.forEach(this.add, this);
     },
 
     update: function(){
@@ -173,11 +182,8 @@
       if(!this.opt.sortable){return;}
       if(typeof this.collection.sortBy !== 'function'){throw new Error("Collection isn't a SortableList");}
       this.sortField = col;
-
-      //do some magic to check the col array for a sorting function
-
+      //TODO some magic to check the col array for a sorting function
       this.collection.sortBy(col);
-
     },
 
     sort: function(){
@@ -198,14 +204,6 @@
       }
     },
     
-    reset: function(){
-      this.removeAll();
-      this.render(); //needed to redraw the headers
-      this.updateHeaders(); // the sort is already done during the reset so...
-      this.addEmpty();
-      this.collection.forEach(this.add, this);
-    },
-
     addEmpty: function(){
       if(this.collection.length === 0 && this.opt.emptyMessage){
         var colspan = this.col().length;
@@ -218,7 +216,6 @@
     },
 
     attachAll: function(){
-      //console.log('attachAll');
       this.collection.forEach(function(model){
         var cid = model.cid;
         var row = this.rows[cid];
@@ -231,23 +228,9 @@
     },
 
     removeAll: function(){
+      _.forEach(this.rows, function(m){m.off();});
       this.rows = {};
       this.tbody.empty();
-    },
-
-    add: function(model){
-      //console.log('add');
-      var cid = model.cid;
-      var data = {
-        model: model,
-        col: this.col()
-      };
-      var row = this.rows[cid] = new this.opt.view(data);
-      this.tbody.append(row.el);
-
-      if(this.collection.length === 1){
-        this.removeEmpty();
-      }
     },
 
     remove: function(model){
@@ -258,6 +241,21 @@
 
       delete this.rows[cid];
       this.addEmpty();
+    },
+
+    add: function(model){
+      var cid = model.cid;
+      var data = {
+        model: model,
+        col: this.col()
+      };
+
+      var row = this.rows[cid] = new this.opt.view(data);
+      this.tbody.append(row.el);
+      
+      if(this.collection.length === 1){
+        this.removeEmpty();
+      }
     },
 
     at: function(index){
