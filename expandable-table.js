@@ -1,87 +1,116 @@
+/*global _:true, Backbone:true, $: true, BTS: true */
+
 (function(){
 
-  BTS.ExpandableTable = BTS.GenericTable.extend({
+  BTS.ExpandableTable = BTS.SortableTable.extend({
 
+    // Our parents initialize will copy all the options over we just need to
+    // specify a few more defaults
     initialize: function(opt){
-      BTS.GenericTable.prototype.initialize.call(this, opt);
+      BTS.SortableTable.prototype.initialize.call(this, opt);
       _.defaults(this.opt, {
-        expandedView: WC.ExpandableTableRow,
+        expandedView: BTS.ExpandableTableRow,
         keepRow: false
       });
-    }
+      this.contractedViews = {};
+      this.expandedViews = {};
+    },
+
+    removeAll: function(){
+      _.forEach(this.contractedViews, function(m){m.off();});
+      _.forEach(this.expandedViews, function(m){m.off();});
+      this.contractedViews = {};
+      this.expandedViews = {};
+      this.rows = {}; // no need call off on this in the parent
+      BTS.SortableTable.prototype.removeAll.call(this);
+    },
+
+    remove: function(model){
+      var cid = model.cid;
+      this.contractedViews[cid].off();
+      this.contractedViews[cid].remove();
+      delete this.expandedViews[cid];
+
+      this.expandedViews[cid].off();
+      this.expandedViews[cid].remove();
+      delete this.contractedViews[cid];
+
+      BTS.SortableTable.prototype.remove.call(this, model);
+    },
+
+    add: function(model){
+      BTS.SortableTable.prototype.add.call(this, model);
+
+      var cid = model.cid;
+      var data = {
+        model: model,
+        col: this.col()
+      };
+
+      var ctd = this.contractedViews[cid] = this.rows[cid];
+      var exp = this.expandedViews[cid] = new this.opt.expandedView(data);
+
+      ctd.on('toggle', this.toggle, this);
+      ctd.on('expand', this.expand, this);
+      ctd.on('contract', this.contract, this);
+      
+      exp.on('toggle', this.toggle, this);
+      exp.on('expand', this.expand, this);
+      exp.on('contract', this.contract, this);
+    },
 
     expand: function(cid){
-      var dis = this.displayedRows[cid];
-      var exp = this.expandedRows[cid];
+      var row = this.rows[cid];
+      var exp = this.expandedViews[cid];
 
-      if(dis === exp){return;}
+      if(row === exp){return;}
 
-      dis.$el.after(exp.el);
-      this.displayedRows[cid] = exp;
+      row.$el.after(exp.el);
+      this.rows[cid] = exp;
 
       if(!this.opt.keepRow){
-        dis.detach();
+        row.detach();
       }
     },
 
     contract: function(cid){
-      var dis = this.displayedRows[cid];
-      var exp = this.expandedRows[cid];
+      var ctd = this.contractedViews[cid];
+      var exp = this.expandedViews[cid];
       var row = this.rows[cid];
 
-      if(dis === row){return;}
+      if(row === ctd){return;}
 
       if(!this.opt.keepRow){
-        dis.$el.before(row.el);
+        row.$el.before(ctd.el);
       }
-      this.displayedRows[cid] = row;
+      this.rows[cid] = ctd;
       exp.detach();
-
     },
 
     toggle: function(cid){
-      if(this.displayedRows[cid] === this.rows[cid]){
+      if(this.rows[cid] === this.contractedViews[cid]){
         this.expand(cid);
       }else{
         this.contract(cid);
       }
     },
 
-    //todo make this work
-    add: function(model){
-      var exp = this.expandedRows[cid] = new this.opt.expandedView(data);
-
-      row.on('toggle', this.toggle, this);
-      row.on('expand', this.expand, this);
-      row.on('contract', this.contract, this);
-      
-      exp.on('toggle', this.toggle, this);
-      exp.on('expand', this.expand, this);
-      exp.on('contract', this.contract, this);
-
-      this.displayedRows[cid] = this.rows[cid];
-    },
-
-    remove: function(model){
-      this.expandedRows[cid].remove();
-      this.expandedRows[cid].off();
-      delete this.expandedRows[cid];
-      delete this.displayedRows[cid];
-    },
-
     attachAll: function(){
-      var dis = this.displayedRows[cid];
-      var exp = this.expandedRows[cid];
-      if(this.opt.keepRow && dis === exp){
+      this.collection.forEach(function(model){
+        var cid = model.cid;
+        var row = this.rows[cid];
+        if(this.opt.keepRow && this.expandedViews[cid] === this.rows[cid]){
+          this.tbody.append(this.contractedViews[cid].el);
+        }
         this.tbody.append(row.el);
-      }
+      }, this);
     }
 
   });
 
-  BTS.ExpandableTableRow = BTS.GenericTableRow.extend({
+  BTS.ExpandableTableRow = BTS.SortableTableRow.extend({
 
-    template: 'expandable-table-row',
+    template: 'sortable-table-row',
 
     events: {
       'click .js-toggle': 'toggle',
@@ -90,28 +119,7 @@
     },
 
     initialize: function(opt){
-      BTS.GenericTableRow.prototype.initialize.call(opt);
-    },
-
-    render: function(){
-      var data = _.map(this.col, function(field){
-          var row = {};
-          row.className = field.className;
-          row.cid = this.model.cid;
-
-          if(field.render){
-            var value = field.field? this.model.get(field.field) : undefined;
-            row.html = field.render(value, this.model);
-          }else if(field.field){
-            row.text = this.model.get(field.field);
-          }
-          return row;
-      }, this);
-
-      var context = _.extend({}, this.context, {col:data}); 
-
-      this.$el.html( WC.renderMustache(this.template,context));
-      return this.el;
+      BTS.SortableTableRow.prototype.initialize.call(this, opt);
     },
 
     toggle: function(){
@@ -127,3 +135,5 @@
     }
 
   });
+
+}.call(this));

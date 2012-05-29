@@ -112,7 +112,7 @@
         template: 'sortable-table',
         tableClass: false,
         sortable: true,
-        view: BTS.GenericTableRow,
+        view: BTS.SortableTableRow,
         col: undefined,
         emptyMessage: 'No Rows to Display'
       });
@@ -268,7 +268,7 @@
 
   });
 
-BTS.GenericTableRow = Backbone.View.extend({
+BTS.SortableTableRow = Backbone.View.extend({
 
     tagName: 'tr',
 
