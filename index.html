@@ -34,7 +34,7 @@
               tableClass:'table table-bordered table-striped',
               collection: new BTS.SortableList(names)
             });
-            nameTable.collection.sortByField('age');
+            nameTable.sortBy('age');
           });
         </pre>
       </div>
@@ -88,7 +88,7 @@
         tableClass:'table table-bordered table-striped',
         collection: new BTS.SortableList(names)
       });
-      nameTable.collection.sortByField('age');
+      nameTable.collection.sortBy('age');
 
       twitterTable = new BTS.SortableTable({
         el: $('#twitterTable'),

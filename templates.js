@@ -36,4 +36,4 @@
   };
 
 
-}).call(this);
+}.call(this));
