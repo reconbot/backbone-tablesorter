@@ -227,11 +227,12 @@
         var cid = model.cid;
         var row = this.rows[cid];
         this.tbody.append(row.el);
+        row.attach();
       }, this);
     },
 
     detatchAll: function(){
-      this.tbody.find('tr').detach();
+      _.forEach(this.rows, function(m){m.detach();});
     },
 
     removeAll: function(){
@@ -259,6 +260,7 @@
 
       var row = this.rows[cid] = new this.opt.view(data);
       this.tbody.append(row.el);
+      row.attach();
       
       if(this.collection.length === 1){
         this.removeEmpty();
@@ -321,6 +323,10 @@ BTS.SortableTableRow = Backbone.View.extend({
 
     detach: function(){
       this.$el.detach();
+    },
+
+    attach: function(){
+      //no-op
     }
 
   });
