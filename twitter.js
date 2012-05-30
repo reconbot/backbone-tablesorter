@@ -1,9 +1,8 @@
+/*global _:true, Backbone:true, $: true, BTS: true */
+
 var TweetSearch = BTS.SortableList.extend({
 	
-	url: function(){
-		if(!this.search){throw new Error('No search defined');}
-		return 'http://search.twitter.com/search.json?rpp=25&q=' + this.search;
-	},
+	url: 'http://search.twitter.com/search.json',
 
 	initialize: function(models, opt){
 		opt = opt || {};
@@ -12,8 +11,15 @@ var TweetSearch = BTS.SortableList.extend({
 	},
 
 	sync: function(method, model, opt){
+		if(method !== 'read'){throw new Error("I can't do anything but read tweets");}
+		if(!this.search){throw new Error('No search defined');}
 		opt = opt || {};
+		opt.type = "GET";
 		opt.dataType = 'jsonp';
+		opt.data = {
+			rpp: 10, // results per page
+			q: this.search
+		};
 		return Backbone.sync.call(this, method, model, opt);
 	},
 

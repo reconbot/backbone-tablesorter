@@ -15,10 +15,12 @@
         </p>
       </div>
     </div>
+    <hr>
     <div class="row">
       <div class="span12">
-        Lets make a quick and easy example table. I don't even want to think about making columns, or figuring out datatypes.
-        Also age before alphabet.
+        <h2>Simple Use</h2>
+        Lets make a quick and easy example table. I don't even want to think about making columns, or figuring out datatypes. Also, lets display age before alphabet.
+      </div>
     </div>
     <div class="row">
       <div class="span8">
@@ -34,7 +36,7 @@
               tableClass:'table table-bordered table-striped',
               collection: new BTS.SortableList(names)
             });
-            nameTable.collection.sortByField('age');
+            nameTable.sortBy('age');
           });
         </pre>
       </div>
@@ -42,18 +44,19 @@
         <table id="ageTable"></table>
       </div>
     </div>
+    <hr>
     <div class="row">
       <div class="span12">
-        Now for something completely different. Ahead we'll make a live updating twitter search by extending the SortableList class.
+        <h2>Advanced use</h2>
+        Now for something completely different. Ahead we'll make a live updating twitter search by extending the <a href="twitter.js">SortableList class</a>. 
       </div>
     </div>
-
     <div class="row">
       <div class="span12">
-        <h2>Twitter search for:</h2>
-        <form id="search" class="form-inline">
+        <form id="search" class="form-horizontal">
           <fieldset>
             <div class="control-group">
+              <label class="control-label">Twitter Search</label>
               <div class="controls">
                 <div class="input-append">
                   <input class="span2" id="twitterSearch" type="text" value="backbonejs"/><input type="submit" class="btn btn-primary" value="Search"/>
@@ -65,7 +68,23 @@
         <table id="twitterTable"></table>
       </div>
     </div>
+    <hr>
+    <div class="row">
+      <div class="span12">
+        <h2>More Advanced</h2>
+        <p>
+          Lets blow our last example out of the water. I want to extend the SortableTable() class itself. I'm sick of these single state rows, I need something more dynamic. Behold the <a href="expandable-table.js">ExpandableTable() and Expanded Views</a>
+        </p>
+      </div>
+    </div>
+      <div class="row">
+      <div class="span12">
+        <table id="expandable"></table>
+      </div>
+    </div>
   </div>
+
+
   <!-- Soooo many deps -->
   <script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
   <script type="text/javascript" src="lib/underscore-min.js"></script>
@@ -75,6 +94,7 @@
   <script type="text/javascript" src="table.js"></script>
   <script type="text/javascript" src="twitter.js"></script>
   <script type="text/javascript" src="templates.js"></script>
+  <script type="text/javascript" src="expandable-table.js"></script>
   <script type="text/javascript">
     var nameTable, names = [{name:'Bill',age:42},{name:'Jeff',age:19},{name:'Maggie',age:28}];
     
@@ -82,47 +102,64 @@
     tweets.fetch();
     var twitterTable;
 
+    var expandoTable;
+
     $(function(){
+
+      //basic
       nameTable = new BTS.SortableTable({
         el: $('#ageTable'),
         tableClass:'table table-bordered table-striped',
         collection: new BTS.SortableList(names)
       });
-      nameTable.collection.sortByField('age');
+      nameTable.collection.sortBy('age');
+
+      //advanced
+
+      var twitterCol = [
+        {name:'User', field:'from_user', render:function(user, model){
+          var url = "https://twitter.com/" + user + "/status/" + model.get('id_str');
+          return '<a target="_blank" href="' + url + '"><img src="'+ model.get('profile_image_url') + '" /> <br>' + user + "</a>";
+        }},
+        {name:'Tweet', field:'text'},
+        {name:'Created', field: 'created_at'}
+      ];
 
       twitterTable = new BTS.SortableTable({
         el: $('#twitterTable'),
         collection: tweets,
         tableClass:'table table-bordered table-striped',
-        col:[
-          {name:'User', field:'from_user', render:function(user, model){
-            var url = "https://twitter.com/" + user + "/status/" + model.get('id_str');
-            return '<a target="_blank" href="' + url + '"><img src="'+ model.get('profile_image_url') + '" /> <br>' + user + "</a>";
-          }},
-          {name:'Tweet', field:'text'},
-          {name:'Created', field: 'created_at'}
-        ]
+        col:twitterCol
       });
 
       $('#search').submit(function(e){
         e.preventDefault();
         tweets.search = $('#twitterSearch').val();
         tweets.fetch();
-      })
+      });
+
+      //Really advanced
+      var advancedTwitterCol = _.map(twitterCol, function(c){return _.clone(c);});
+      advancedTwitterCol.unshift({
+        name:'expand',
+        className: 'js-toggle',
+        render:function(){return '<i class="icon-random"></i>';}
+      });
+
+      var ExpandedTwitterRow = BTS.ExpandableTableRow.extend({
+        template: 'expanded-twitter-row'
+      });
+
+      expandoTable = new BTS.ExpandableTable({
+        el: $('#expandable'),
+        view: BTS.ExpandableTableRow,
+        expandedView: ExpandedTwitterRow,
+        collection: tweets,
+        col: advancedTwitterCol,
+        keepRow: true
+      });
+
     });
-  </script>
-  <script type="text/javascript">
-
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-8517491-8']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-     })();
-
   </script>
 
 </body>

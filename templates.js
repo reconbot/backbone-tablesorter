@@ -25,15 +25,15 @@
     // </thead>
     // <tbody></tbody>
 
-    'sortable-table-row':'{{#col}}<td {{#className}}class="{{className}}"{{/className}}>{{text}}{{{html}}}</td>{{/col}}'
+    'sortable-table-row':'{{#col}}<td {{#className}}class="{{className}}"{{/className}}>{{text}}{{{html}}}</td>{{/col}}',
     // {{#col}}
     //   <td {{#className}}class="{{className}}"{{/className}}>
     //     {{text}}
     //     {{{html}}}
     //   </td>
     // {{/col}}
-
+    'expanded-twitter-row': '<td colspan="{{colspan}}"><h1 style="text-align:center;">{{model.from_user}} is awesome!</h1></td>'
   };
 
 
-}).call(this);
+}.call(this));

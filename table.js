@@ -1,3 +1,5 @@
+/*global _:true, Backbone:true, $: true, Mustache: true */
+
 (function(){
 
   var BTS;
@@ -17,7 +19,7 @@
   
   BTS.SortableList = Backbone.Collection.extend({
     
-    sortField: 'cid',
+    sortByMe: 'cid',
 
     asc: false,
 
@@ -31,24 +33,23 @@
       }
     },
 
-    sortByField: function(field, asc){
-      //console.log('sortByField', field, asc);
-      if(!this.checkField(field)){
+    sortBy: function(me, asc){
+      var isValid = (typeof me === 'function' || (typeof me === 'string' && this.checkField(me)) );
+      if(!isValid){
         return false;
       }
 
-      if(arguments.length === 1){
-        if(this.sortField === field){
+      if(arguments.length === 2){
+        this.asc = asc;
+      }else{
+        if(this.sortByMe === me){
           this.asc = !this.asc;
         }else{
           this.asc = false;
         }
-      }else{
-        this.asc = asc;
       }
 
-      this.sortField = field;
-      
+      this.sortByMe = me;
       this.sort();
     },
 
@@ -69,23 +70,21 @@
     },
 
     comparator: function(m1, m2){
-      var field = this.sortField;
+      var me = this.sortByMe;
       var a,b;
 
-      if(field === 'id'){
+      if(typeof me === 'function'){
+        a = me(m1);
+        b = me(m2);
+      }else if(me === 'id'){
         a = m1.id;
         b = m2.id;
-      }else if(field === 'cid'){
+      }else if(me === 'cid'){
         a = m1.cid;
         b = m2.cid;
       }else{
-        a = m1.get(field);
-        b = m2.get(field);
-      }
-
-      if($.isNumeric(a) && $.isNumeric(b)){
-        a = Number(a);
-        b = Number(b);
+        a = m1.get(me);
+        b = m2.get(me);
       }
 
       if(this.asc){
@@ -113,7 +112,7 @@
         template: 'sortable-table',
         tableClass: false,
         sortable: true,
-        view: BTS.GenericTableRow,
+        view: BTS.SortableTableRow,
         col: undefined,
         emptyMessage: 'No Rows to Display'
       });
@@ -123,6 +122,7 @@
       }
 
       this.collection = this.collection || new BTS.SortableList();
+      this.rows = {};
 
       // if anything changes...
       this.collection.on('reset', this.reset, this);
@@ -140,6 +140,14 @@
       }));
       this.tbody = this.$('tbody');
       if(!this.tbody.length){ throw new Error('No table body found');}
+    },
+
+    reset: function(){
+      this.removeAll();
+      this.render(); //needed to redraw the headers
+      this.updateHeaders(); // the sort is already done during the reset so...
+      this.addEmpty();
+      this.collection.forEach(this.add, this);
     },
 
     update: function(){
@@ -166,14 +174,16 @@
     },
 
     triggerSort: function(e){
-     //console.log('triggerSort');
-      if(!this.opt.sortable){return;}
-
-      var list = this.collection;
-      if(typeof list.sortByField !== 'function'){throw new Error("Collection isn't a SortableList");}
-      
       var field = e.target.getAttribute('data-field');
-      return list.sortByField(field);
+      return this.sortBy(field);
+    },
+
+    sortBy: function(col){
+      if(!this.opt.sortable){return;}
+      if(typeof this.collection.sortBy !== 'function'){throw new Error("Collection isn't a SortableList");}
+      this.sortField = col;
+      //TODO some magic to check the col array for a sorting function
+      this.collection.sortBy(col);
     },
 
     sort: function(){
@@ -184,7 +194,7 @@
     },
 
     updateHeaders: function(){
-      var field = this.collection.sortField;
+      var field = this.sortField;
       this.$('.js-sort-sprite').removeClass('icon-chevron-down icon-chevron-up');
       var sprite = this.$('th[data-field="'+ field +'"] > .js-sort-sprite');
       if(this.collection.asc){
@@ -194,14 +204,6 @@
       }
     },
     
-    reset: function(){
-      this.removeAll();
-      this.render(); //needed to redraw the headers
-      this.updateHeaders(); // the sort is already done during the reset so...
-      this.addEmpty();
-      this.collection.forEach(this.add, this);
-    },
-
     addEmpty: function(){
       if(this.collection.length === 0 && this.opt.emptyMessage){
         var colspan = this.col().length;
@@ -214,7 +216,6 @@
     },
 
     attachAll: function(){
-      //console.log('attachAll');
       this.collection.forEach(function(model){
         var cid = model.cid;
         var row = this.rows[cid];
@@ -227,23 +228,9 @@
     },
 
     removeAll: function(){
+      _.forEach(this.rows, function(m){m.off();});
       this.rows = {};
       this.tbody.empty();
-    },
-
-    add: function(model){
-      //console.log('add');
-      var cid = model.cid;
-      var data = {
-        model: model,
-        col: this.col()
-      };
-      var row = this.rows[cid] = new this.opt.view(data);
-      this.tbody.append(row.el);
-
-      if(this.collection.length === 1){
-        this.removeEmpty();
-      }
     },
 
     remove: function(model){
@@ -256,6 +243,21 @@
       this.addEmpty();
     },
 
+    add: function(model){
+      var cid = model.cid;
+      var data = {
+        model: model,
+        col: this.col()
+      };
+
+      var row = this.rows[cid] = new this.opt.view(data);
+      this.tbody.append(row.el);
+      
+      if(this.collection.length === 1){
+        this.removeEmpty();
+      }
+    },
+
     at: function(index){
       var model = this.collection.at(index);
       if(typeof model === 'undefined'){
@@ -266,7 +268,7 @@
 
   });
 
-BTS.GenericTableRow = Backbone.View.extend({
+BTS.SortableTableRow = Backbone.View.extend({
 
     tagName: 'tr',
 
@@ -281,7 +283,7 @@ BTS.GenericTableRow = Backbone.View.extend({
       this.render();
     },
 
-    render: function(){ 
+    render: function(){
       var data = _.map(this.col, function(field){
           var row = {};
           row.className = field.className;
@@ -296,7 +298,11 @@ BTS.GenericTableRow = Backbone.View.extend({
           return row;
       }, this);
 
-      var context = _.extend({}, this.context, {col:data}); 
+      var context = _.extend({}, this.context, {
+        col: data,
+        model: this.model.toJSON(),
+        colspan: this.col.length
+      });
 
       this.$el.html( BTS.renderTemplate(this.template,context));
       return this.el;
@@ -313,4 +319,4 @@ BTS.GenericTableRow = Backbone.View.extend({
   });
 
 
-}).call(this);
+}.call(this));
