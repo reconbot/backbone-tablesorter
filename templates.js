@@ -32,7 +32,7 @@
     //     {{{html}}}
     //   </td>
     // {{/col}}
-    'expanded-twitter-row': 'GROOVY BABY!'
+    'expanded-twitter-row': '<td colspan="{{colspan}}"><h1 style="text-align:center;">{{model.from_user}} is awesome!</h1></td>'
   };
 
 

@@ -298,7 +298,11 @@ BTS.SortableTableRow = Backbone.View.extend({
           return row;
       }, this);
 
-      var context = _.extend({}, this.context, {col:data});
+      var context = _.extend({}, this.context, {
+        col: data,
+        model: this.model.toJSON(),
+        colspan: this.col.length
+      });
 
       this.$el.html( BTS.renderTemplate(this.template,context));
       return this.el;
