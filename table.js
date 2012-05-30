@@ -110,6 +110,7 @@
       opt = opt || {};
       this.opt = _.defaults(opt,{
         template: 'sortable-table',
+        templateHead: 'sortable-table-head',
         tableClass: false,
         sortable: true,
         view: BTS.SortableTableRow,
@@ -129,25 +130,32 @@
       this.collection.on('add', this.add, this);
       this.collection.on('remove', this.remove, this);
       this.collection.on('sort', this.sort, this);
-
-      this.render();
-      this.reset();
     },
 
     render: function(){
-      this.$el.html( BTS.renderTemplate(this.opt.template,{
+      this.$el.html( BTS.renderTemplate(this.opt.template));
+      this.tbody = this.$('tbody');
+      this.thead = this.$('thead');
+      if(!this.tbody.length){ throw new Error('No table body found');} // save hours of debugging
+      if(!this.thead.length){ throw new Error('No table head found');}
+      this.updateColumns();
+      this.reset();
+      return this.el;
+    },
+
+    updateColumns: function(){
+      this.thead.html(BTS.renderTemplate(this.opt.templateHead,{
         col: this.col()
       }));
-      this.tbody = this.$('tbody');
-      if(!this.tbody.length){ throw new Error('No table body found');}
+
     },
 
     reset: function(){
       this.removeAll();
-      this.render(); //needed to redraw the headers
-      this.updateHeaders(); // the sort is already done during the reset so...
-      this.addEmpty();
+      this.updateColumns();
+      this.updateChevrons(); // the sort is already done during the reset so...
       this.collection.forEach(this.add, this);
+      this.addEmpty();
     },
 
     update: function(){
@@ -187,13 +195,12 @@
     },
 
     sort: function(){
-      //console.log('sort');
       this.detatchAll();
-      this.updateHeaders();
+      this.updateChevrons();
       this.attachAll();
     },
 
-    updateHeaders: function(){
+    updateChevrons: function(){
       var field = this.sortField;
       this.$('.js-sort-sprite').removeClass('icon-chevron-down icon-chevron-up');
       var sprite = this.$('th[data-field="'+ field +'"] > .js-sort-sprite');

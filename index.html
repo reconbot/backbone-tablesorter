@@ -36,6 +36,7 @@
               tableClass:'table table-bordered table-striped',
               collection: new BTS.SortableList(names)
             });
+            nameTable.render();
             nameTable.sortBy('age');
           });
         </pre>
@@ -112,6 +113,7 @@
         tableClass:'table table-bordered table-striped',
         collection: new BTS.SortableList(names)
       });
+      nameTable.render();
       nameTable.collection.sortBy('age');
 
       //advanced
@@ -131,6 +133,7 @@
         tableClass:'table table-bordered table-striped',
         col:twitterCol
       });
+      twitterTable.render();
 
       $('#search').submit(function(e){
         e.preventDefault();
@@ -158,6 +161,8 @@
         col: advancedTwitterCol,
         keepRow: true
       });
+      expandoTable.render();
+
 
     });
   </script>

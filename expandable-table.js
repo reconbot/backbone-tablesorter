@@ -40,7 +40,6 @@
 
     add: function(model){
       BTS.SortableTable.prototype.add.call(this, model);
-
       var cid = model.cid;
       var data = {
         model: model,
@@ -49,7 +48,6 @@
 
       var ctd = this.contractedViews[cid] = this.rows[cid];
       var exp = this.expandedViews[cid] = new this.opt.expandedView(data);
-
       ctd.on('toggle', this.toggle, this);
       ctd.on('expand', this.expand, this);
       ctd.on('contract', this.contract, this);

@@ -8,23 +8,16 @@
   }
 
   BTS.templates = {
-    'sortable-table': '<colgroup>{{#col}}<col {{#className}}class="{{className}}"{{/className}}/>{{/col}}</colgroup><thead><tr>{{#col}}<th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">{{name}} <i class="js-sort-sprite"></i></th>{{/col}}</tr></thead><tbody></tbody>',
-    // <colgroup>
+    'sortable-table': '<thead></thead><tbody></tbody>',
+    
+    'sortable-table-head': '<tr>{{#col}}<th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">{{name}} <i class="js-sort-sprite"></i></th>{{/col}}</tr>',
+    // <tr>
     //   {{#col}}
-    //     <col {{#className}}class="{{className}}"{{/className}}/>
+    //     <th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">
+    //       {{name}} <i class="js-sort-sprite"></i>
+    //     </th>
     //   {{/col}}
-    // </colgroup>
-    // <thead>
-    //   <tr>
-    //     {{#col}}
-    //       <th {{#className}}class="{{className}}"{{/className}} data-field="{{field}}">
-    //         {{name}} <i class="js-sort-sprite"></i>
-    //       </th>
-    //     {{/col}}
-    //   </tr>
-    // </thead>
-    // <tbody></tbody>
-
+    //  </tr>
     'sortable-table-row':'{{#col}}<td {{#className}}class="{{className}}"{{/className}}>{{text}}{{{html}}}</td>{{/col}}',
     // {{#col}}
     //   <td {{#className}}class="{{className}}"{{/className}}>
