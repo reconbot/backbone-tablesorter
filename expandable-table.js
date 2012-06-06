@@ -69,6 +69,8 @@
       if(!this.opt.keepRow){
         row.detach();
       }
+      row.afterExpand();
+      exp.afterExpand();
     },
 
     contract: function(cid){
@@ -83,6 +85,8 @@
       }
       this.rows[cid] = ctd;
       exp.detach();
+      ctd.afterContract();
+      exp.afterContract();
     },
 
     toggle: function(cid){
@@ -127,10 +131,14 @@
     expand: function(){
       return this.trigger('expand', this.model.cid, this);
     },
+
+    afterExpand: function(){},
     
     contract: function(){
       return this.trigger('contract', this.model.cid, this);
-    }
+    },
+
+    afterContract: function(){}
 
   });
 
