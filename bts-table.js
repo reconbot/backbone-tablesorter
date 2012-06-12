@@ -153,7 +153,7 @@
     reset: function(){
       this.removeAll();
       this.updateColumns();
-      this.updateChevrons(); // the sort is already done during the reset so...
+      this.updateArrows(); // the sort is already done during the reset so...
       this.collection.forEach(this.add, this);
       this.addEmpty();
     },
@@ -196,18 +196,19 @@
 
     sort: function(){
       this.detatchAll();
-      this.updateChevrons();
+      this.updateArrows();
       this.attachAll();
+      this.trigger('sort', this.sortField, this.collection.asc);
     },
 
-    updateChevrons: function(){
+    updateArrows: function(){
       var field = this.sortField;
-      this.$('.js-sort-sprite').removeClass('icon-chevron-down icon-chevron-up');
+      this.$('.js-sort-sprite').removeClass('icon-arrow-down icon-arrow-up');
       var sprite = this.$('th[data-field="'+ field +'"] > .js-sort-sprite');
       if(this.collection.asc){
-        sprite.addClass('icon-chevron-up');
+        sprite.addClass('icon-arrow-up');
       }else{
-        sprite.addClass('icon-chevron-down');
+        sprite.addClass('icon-arrow-down');
       }
     },
     
@@ -249,6 +250,7 @@
 
       delete this.rows[cid];
       this.addEmpty();
+      this.trigger('remove', model);
     },
 
     add: function(model){
@@ -265,6 +267,7 @@
       if(this.collection.length === 1){
         this.removeEmpty();
       }
+      this.trigger('add', model);
     },
 
     at: function(index){

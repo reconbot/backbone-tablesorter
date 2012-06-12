@@ -48,13 +48,18 @@
 
       var ctd = this.contractedViews[cid] = this.rows[cid];
       var exp = this.expandedViews[cid] = new this.opt.expandedView(data);
+
       ctd.on('toggle', this.toggle, this);
       ctd.on('expand', this.expand, this);
       ctd.on('contract', this.contract, this);
-      
+
       exp.on('toggle', this.toggle, this);
       exp.on('expand', this.expand, this);
       exp.on('contract', this.contract, this);
+    },
+
+    expandAll: function(){
+      _.forEach(this.rows,function(row){return row.expand();});
     },
 
     expand: function(cid){
@@ -69,6 +74,7 @@
       if(!this.opt.keepRow){
         row.detach();
       }
+      this.trigger('expand', cid);
       row.afterExpand();
       exp.afterExpand();
     },
@@ -85,8 +91,13 @@
       }
       this.rows[cid] = ctd;
       exp.detach();
+      this.trigger('contract', cid);
       ctd.afterContract();
       exp.afterContract();
+    },
+
+    contractAll: function(){
+      _.forEach(this.rows,function(row){return row.contract();});
     },
 
     toggle: function(cid){
