@@ -52,10 +52,12 @@
       ctd.on('toggle', this.toggle, this);
       ctd.on('expand', this.expand, this);
       ctd.on('contract', this.contract, this);
+      ctd.on('remove', this.remove, this);
 
       exp.on('toggle', this.toggle, this);
       exp.on('expand', this.expand, this);
       exp.on('contract', this.contract, this);
+      exp.on('remove', this.remove, this);
     },
 
     expandAll: function(){
