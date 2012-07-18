@@ -189,7 +189,6 @@
     sortBy: function(col){
       if(!this.opt.sortable){return;}
       if(typeof this.collection.sortBy !== 'function'){throw new Error("Collection isn't a SortableList");}
-      this.sortField = col;
       //TODO some magic to check the col array for a sorting function
       this.collection.sortBy(col);
     },
@@ -202,6 +201,12 @@
     },
 
     updateArrows: function(){
+      if(typeof this.collection.sortByMe === 'string'){
+        this.sortField = this.collection.sortByMe;
+      }else{
+        this.sortField = '';
+      }
+
       var field = this.sortField;
       this.$('.js-sort-sprite').removeClass('icon-arrow-down icon-arrow-up');
       var sprite = this.$('th[data-field="'+ field +'"] > .js-sort-sprite');
